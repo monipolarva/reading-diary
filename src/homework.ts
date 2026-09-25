@@ -1,7 +1,7 @@
 // Задача 1. Базовые типы
 
-const userName: string = "Вадим";
-const userAge: number = 15;
+const userName: string = "Полина";
+const userAge: number = 19;
 const hasAccess: boolean = true;
 
 console.log("Имя:", userName);
