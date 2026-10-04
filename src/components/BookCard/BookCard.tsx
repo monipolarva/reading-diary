@@ -70,6 +70,40 @@ const Stars = styled.span`
   letter-spacing: 1px;
 `;
 
+const DeleteButton = styled.button`
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  margin-left: auto;
+  padding: 0;
+  font-size: 18px;
+  background-color: #fffaf4;
+  border: 1px solid #ded6cc;
+  border-radius: 10px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #f3e9dd;
+  }
+
+  &:active {
+    background-color: #e8d8c6;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #8b735f;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`;
+
 const statusText = {
   want: "Хочу прочитать",
   reading: "Читаю",
@@ -121,6 +155,13 @@ export default function BookCard({ book }: BookCardProps) {
           </Info>
         )}
       </div>
+
+      <DeleteButton
+        type="button"
+        aria-label="Удалить книгу"
+      >
+        🗑️
+      </DeleteButton>
     </Card>
   );
 }
