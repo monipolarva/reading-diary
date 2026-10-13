@@ -63,7 +63,7 @@ const Cover = styled.div<StatusStyleProps>`
       return "linear-gradient(135deg, #f7d6e2, #c9829b)";
     }
 
-    return "linear-gradient(135deg, #ecd5f5, #b678c9)";
+    return "linear-gradient(135deg, #f0c8dc, #c983ad)";
   }};
 `;
 
@@ -130,7 +130,7 @@ const Badge = styled.span<StatusStyleProps>`
       return "#9a5570";
     }
 
-    return "#7b4f89";
+    return "#9b4f73";
   }};
 
   background-color: ${({ status }) => {
@@ -142,7 +142,7 @@ const Badge = styled.span<StatusStyleProps>`
       return "#fce7ef";
     }
 
-    return "#f0e2f7";
+    return "#f6ddea";
   }};
 
   &::before {
@@ -162,7 +162,7 @@ const Badge = styled.span<StatusStyleProps>`
         return "#e59ab4";
       }
 
-      return "#b982c8";
+      return "#d783aa";
     }};
   }
 `;
