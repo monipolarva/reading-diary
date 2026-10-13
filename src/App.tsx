@@ -3,6 +3,7 @@ import BookList from "./components/BookList/BookList";
 import { Stats } from "./components/Stats/Stats";
 import StyledButtonDemo from "./demos/StyledButtonDemo";
 import { TicketStatsDemo } from "./demos/TicketStatsDemo";
+import { WarehouseStatsDemo } from "./demos/WarehouseStatsDemo";
 import styled from "@emotion/styled";
 
 const Page = styled.div`
@@ -47,6 +48,8 @@ export default function App() {
         <StyledButtonDemo />
 
         <TicketStatsDemo />
+
+        <WarehouseStatsDemo />
       </Container>
     </Page>
   );
