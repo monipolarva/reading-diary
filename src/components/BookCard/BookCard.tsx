@@ -7,6 +7,7 @@ import styled from "@emotion/styled";
 
 interface BookCardProps {
   book: Book;
+  deleteBook: (id: number) => void;
 }
 
 interface StatusStyleProps {
@@ -26,14 +27,14 @@ const Card = styled.article`
   background: linear-gradient(
     135deg,
     #fff8fb,
-    #fdeef4
+    #f9edf2
   );
 
-  border: 1px solid #f3c9d9;
+  border: 1px solid #ead4dd;
   border-radius: 16px;
 
   box-shadow: 0 8px 20px
-    rgba(195, 124, 151, 0.12);
+    rgba(138, 64, 93, 0.1);
 `;
 
 const Cover = styled.div<StatusStyleProps>`
@@ -47,23 +48,23 @@ const Cover = styled.div<StatusStyleProps>`
 
   padding: 10px;
 
-  color: #fffafd;
+  color: #ffffff;
 
   border-radius: 8px;
 
   box-shadow: 0 8px 18px
-    rgba(133, 72, 98, 0.2);
+    rgba(138, 64, 93, 0.18);
 
   background: ${({ status }) => {
     if (status === "done") {
-      return "linear-gradient(135deg, #f3b6cb, #b85f82)";
+      return "linear-gradient(135deg, #e29ab5, #a9496c)";
     }
 
     if (status === "reading") {
-      return "linear-gradient(135deg, #f7d6e2, #c9829b)";
+      return "linear-gradient(135deg, #efb9ca, #c96f91)";
     }
 
-    return "linear-gradient(135deg, #f0c8dc, #c983ad)";
+    return "linear-gradient(135deg, #f2c9d7, #d693aa)";
   }};
 `;
 
@@ -91,13 +92,22 @@ const CoverTitle =
     }};
   `;
 
+const Content = styled.div`
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+
+  text-align: left;
+`;
+
 const Title = styled.h3`
   margin: 8px 0;
 
   font-size: 24px;
   font-weight: 600;
 
-  color: #5f3447;
+  color: #7d3b55;
 `;
 
 const Author = styled.p`
@@ -105,7 +115,7 @@ const Author = styled.p`
 
   font-size: 18px;
 
-  color: #b77f95;
+  color: #a06179;
 `;
 
 const Badge = styled.span<StatusStyleProps>`
@@ -121,29 +131,9 @@ const Badge = styled.span<StatusStyleProps>`
 
   border-radius: 999px;
 
-  color: ${({ status }) => {
-    if (status === "done") {
-      return "#8a405d";
-    }
+  color: #87435e;
 
-    if (status === "reading") {
-      return "#9a5570";
-    }
-
-    return "#9b4f73";
-  }};
-
-  background-color: ${({ status }) => {
-    if (status === "done") {
-      return "#f8dce6";
-    }
-
-    if (status === "reading") {
-      return "#fce7ef";
-    }
-
-    return "#f6ddea";
-  }};
+  background-color: #f6dfe8;
 
   &::before {
     content: "";
@@ -155,14 +145,14 @@ const Badge = styled.span<StatusStyleProps>`
 
     background-color: ${({ status }) => {
       if (status === "done") {
-        return "#cf6f92";
+        return "#b94e75";
       }
 
       if (status === "reading") {
-        return "#e59ab4";
+        return "#d16d91";
       }
 
-      return "#d783aa";
+      return "#db91ab";
     }};
   }
 `;
@@ -172,11 +162,11 @@ const Info = styled.p`
 
   font-size: 17px;
 
-  color: #8f6f7c;
+  color: #745b65;
 `;
 
 const Stars = styled.span`
-  color: #d98ca8;
+  color: #cf6f91;
 
   letter-spacing: 1px;
 `;
@@ -196,23 +186,23 @@ const DeleteButton = styled.button`
 
   font-size: 18px;
 
-  background-color: #fff5f8;
+  background-color: #fff8fb;
 
-  border: 1px solid #efc5d4;
+  border: 1px solid #ead4dd;
   border-radius: 10px;
 
   cursor: pointer;
 
   &:hover {
-    background-color: #f9dce6;
+    background-color: #f7e5ec;
   }
 
   &:active {
-    background-color: #f3c9d9;
+    background-color: #efd4df;
   }
 
   &:focus-visible {
-    outline: 2px solid #d98ca8;
+    outline: 2px solid #c96f91;
     outline-offset: 2px;
   }
 
@@ -230,6 +220,7 @@ const statusText = {
 
 export default function BookCard({
   book,
+  deleteBook,
 }: BookCardProps) {
   const rating = book.rating || 0;
   const stars = "★".repeat(rating);
@@ -244,14 +235,10 @@ export default function BookCard({
         </CoverTitle>
       </Cover>
 
-      <div>
-        <Title>
-          {book.title}
-        </Title>
+      <Content>
+        <Title>{book.title}</Title>
 
-        <Author>
-          {book.author}
-        </Author>
+        <Author>{book.author}</Author>
 
         <Badge status={book.status}>
           {statusText[book.status]}
@@ -273,18 +260,21 @@ export default function BookCard({
           </>
         ) : (
           <Info>
-            Оценка будет доступна
-            после прочтения
+            Оценка будет доступна после прочтения
           </Info>
         )}
-      </div>
+      </Content>
 
       <DeleteButton
         type="button"
+        onClick={() =>
+          deleteBook(book.id)
+        }
         aria-label="Удалить книгу"
       >
         🗑️
       </DeleteButton>
     </Card>
   );
+
 }

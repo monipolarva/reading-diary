@@ -1,9 +1,15 @@
+import { useState } from "react";
+import { type Book } from "./types/book";
 import { initialBooks } from "./data/books";
+
 import BookList from "./components/BookList/BookList";
 import { Stats } from "./components/Stats/Stats";
+
 import StyledButtonDemo from "./demos/StyledButtonDemo";
 import { TicketStatsDemo } from "./demos/TicketStatsDemo";
 import { WarehouseStatsDemo } from "./demos/WarehouseStatsDemo";
+import { TaskStateDemo } from "./demos/TaskStateDemo";
+
 import styled from "@emotion/styled";
 
 const Page = styled.div`
@@ -34,6 +40,17 @@ const Title = styled.h1`
 `;
 
 export default function App() {
+  const [books, setBooks] =
+    useState<Book[]>(initialBooks);
+
+  const deleteBook = (id: number) => {
+    setBooks((currentBooks) =>
+      currentBooks.filter(
+        (book) => book.id !== id,
+      ),
+    );
+  };
+
   return (
     <Page>
       <Container>
@@ -41,15 +58,19 @@ export default function App() {
           Читательский дневник
         </Title>
 
-        <Stats books={initialBooks} />
+        <Stats books={books} />
 
-        <BookList books={initialBooks} />
+        <BookList
+          books={books}
+          deleteBook={deleteBook}
+        />
 
         <StyledButtonDemo />
 
         <TicketStatsDemo />
 
         <WarehouseStatsDemo />
+        <TaskStateDemo />
       </Container>
     </Page>
   );
