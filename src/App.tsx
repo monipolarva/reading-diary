@@ -4,11 +4,14 @@ import { initialBooks } from "./data/books";
 
 import BookList from "./components/BookList/BookList";
 import { Stats } from "./components/Stats/Stats";
+import { BookForm } from "./components/BookForm/BookForm";
+import { EventFormDemo } from "./components/EventFormDemo/EventFormDemo";
+import { UserCardDemo } from "./components/UserCardDemo/UserCardDemo";
+import { ProfileSettings } from "./components/ProfileSettings/ProfileSettings";
 
 import StyledButtonDemo from "./demos/StyledButtonDemo";
 import { TicketStatsDemo } from "./demos/TicketStatsDemo";
 import { WarehouseStatsDemo } from "./demos/WarehouseStatsDemo";
-import { TaskStateDemo } from "./demos/TaskStateDemo";
 
 import styled from "@emotion/styled";
 
@@ -65,12 +68,19 @@ export default function App() {
           deleteBook={deleteBook}
         />
 
+        <BookForm />
+
+        <EventFormDemo />
+
+        <UserCardDemo />
+
+        <ProfileSettings />
+
         <StyledButtonDemo />
 
         <TicketStatsDemo />
 
         <WarehouseStatsDemo />
-        <TaskStateDemo />
       </Container>
     </Page>
   );
