@@ -1,12 +1,32 @@
+import {
+  type FormEvent,
+  useState,
+} from "react";
+
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { type BookStatus } from "../../types/book";
+
+import {
+  type Book,
+  type BookStatus,
+} from "../../types/book";
+
+import { InfoIcon } from "../../icons/icons";
+
+interface BookFormProps {
+  addBook: (
+    book: Omit<Book, "id">,
+  ) => void;
+}
 
 const Form = styled.form`
-  margin-top: 28px;
   padding: 28px;
 
-  background: rgba(255, 255, 255, 0.82);
+  background: rgba(
+    255,
+    255,
+    255,
+    0.86
+  );
 
   border: 1px solid #ead4dd;
   border-radius: 18px;
@@ -32,6 +52,7 @@ const Field = styled.label`
   margin-bottom: 22px;
 
   font-size: 18px;
+
   color: #7d3b55;
 `;
 
@@ -40,23 +61,11 @@ const Input = styled.input`
   padding: 0 16px;
 
   color: #5f3447;
-  background: rgba(255, 255, 255, 0.76);
+
+  background: #fff8fb;
 
   border: 1px solid #e3cbd5;
   border-radius: 12px;
-
-  &::placeholder {
-    color: #b692a1;
-  }
-
-  &:focus {
-    outline: none;
-
-    border-color: #c96f91;
-
-    box-shadow: 0 0 0 3px
-      rgba(201, 111, 145, 0.15);
-  }
 `;
 
 const Select = styled.select`
@@ -64,71 +73,160 @@ const Select = styled.select`
   padding: 0 16px;
 
   color: #5f3447;
-  background: rgba(255, 255, 255, 0.76);
+
+  background: #fff8fb;
 
   border: 1px solid #e3cbd5;
   border-radius: 12px;
-
-  &:focus {
-    outline: none;
-
-    border-color: #c96f91;
-
-    box-shadow: 0 0 0 3px
-      rgba(201, 111, 145, 0.15);
-  }
 `;
 
 const Textarea = styled.textarea`
   min-height: 96px;
+
   padding: 14px 16px;
 
   color: #5f3447;
-  background: rgba(255, 255, 255, 0.76);
+
+  background: #fff8fb;
 
   border: 1px solid #e3cbd5;
   border-radius: 12px;
 
   resize: vertical;
+`;
 
-  &::placeholder {
-    color: #b692a1;
-  }
+const Error = styled.p`
+  margin: 0 0 18px;
 
-  &:focus {
-    outline: none;
+  padding: 12px 14px;
 
-    border-color: #c96f91;
+  color: #a1355f;
 
-    box-shadow: 0 0 0 3px
-      rgba(201, 111, 145, 0.15);
+  background: #f9dbe7;
+
+  border-radius: 10px;
+`;
+
+const Hint = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  margin: 4px 0 30px;
+
+  padding: 18px;
+
+  color: #87435e;
+
+  background: #f6dfe8;
+
+  border-radius: 12px;
+
+  font-size: 16px;
+`;
+
+const Button = styled.button`
+  width: 100%;
+
+  height: 56px;
+
+  color: white;
+
+  background: #b85f81;
+
+  border: none;
+  border-radius: 12px;
+
+  font-size: 18px;
+
+  cursor: pointer;
+
+  &:hover {
+    background: #9f4f6f;
   }
 `;
 
-export function BookForm() {
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [note, setNote] = useState("");
+export function BookForm({
+  addBook,
+}: BookFormProps) {
+  const [title, setTitle] =
+    useState("");
+
+  const [author, setAuthor] =
+    useState("");
+
+  const [note, setNote] =
+    useState("");
+
+  const [error, setError] =
+    useState("");
 
   const [status, setStatus] =
     useState<BookStatus>("want");
 
-  const [rating, setRating] = useState(5);
+  const [rating, setRating] =
+    useState(5);
+
+  const handleSubmit = (
+    event: FormEvent<HTMLFormElement>,
+  ) => {
+    event.preventDefault();
+
+    if (
+      !title.trim() ||
+      !author.trim()
+    ) {
+      setError(
+        "Заполните название книги и автора.",
+      );
+
+      return;
+    }
+
+    addBook({
+      title,
+      author,
+      status,
+
+      rating:
+        status === "done"
+          ? rating
+          : undefined,
+
+      note:
+        status === "done"
+          ? note
+          : undefined,
+    });
+
+    setTitle("");
+    setAuthor("");
+    setStatus("want");
+    setRating(5);
+    setNote("");
+    setError("");
+  };
 
   return (
-    <Form>
-      <Title>Добавить книгу</Title>
+    <Form onSubmit={handleSubmit}>
+      <Title>
+        Добавить книгу
+      </Title>
+
+      {error && (
+        <Error>{error}</Error>
+      )}
 
       <Field>
         Название книги
 
         <Input
-          type="text"
           value={title}
-          placeholder="Введите название книги"
-          onChange={(event) => {
-            setTitle(event.target.value);
-          }}
+          onChange={(event) =>
+            setTitle(
+              event.target.value,
+            )
+          }
         />
       </Field>
 
@@ -136,12 +234,12 @@ export function BookForm() {
         Автор
 
         <Input
-          type="text"
           value={author}
-          placeholder="Введите автора"
-          onChange={(event) => {
-            setAuthor(event.target.value);
-          }}
+          onChange={(event) =>
+            setAuthor(
+              event.target.value,
+            )
+          }
         />
       </Field>
 
@@ -150,11 +248,12 @@ export function BookForm() {
 
         <Select
           value={status}
-          onChange={(event) => {
+          onChange={(event) =>
             setStatus(
-              event.target.value as BookStatus,
-            );
-          }}
+              event.target
+                .value as BookStatus,
+            )
+          }
         >
           <option value="want">
             Хочу прочитать
@@ -170,36 +269,70 @@ export function BookForm() {
         </Select>
       </Field>
 
-      <Field>
-        Оценка
+      {status === "done" ? (
+        <>
+          <Field>
+            Оценка
 
-        <Select
-          value={rating}
-          onChange={(event) => {
-            setRating(
-              Number(event.target.value),
-            );
-          }}
-        >
-          <option value={1}>1</option>
-          <option value={2}>2</option>
-          <option value={3}>3</option>
-          <option value={4}>4</option>
-          <option value={5}>5</option>
-        </Select>
-      </Field>
+            <Select
+              value={rating}
+              onChange={(event) =>
+                setRating(
+                  Number(
+                    event.target.value,
+                  ),
+                )
+              }
+            >
+              <option value={1}>
+                1
+              </option>
+              <option value={2}>
+                2
+              </option>
+              <option value={3}>
+                3
+              </option>
+              <option value={4}>
+                4
+              </option>
+              <option value={5}>
+                5
+              </option>
+            </Select>
+          </Field>
 
-      <Field>
-        Заметка
+          <Field>
+            Заметка
 
-        <Textarea
-          value={note}
-          placeholder="Добавьте короткую заметку"
-          onChange={(event) => {
-            setNote(event.target.value);
-          }}
-        />
-      </Field>
+            <Textarea
+              value={note}
+              onChange={(event) =>
+                setNote(
+                  event.target.value,
+                )
+              }
+            />
+          </Field>
+        </>
+      ) : (
+        <Hint>
+          <InfoIcon
+            color="#b85f81"
+          />
+
+          <span>
+            Поля оценки и заметки
+            появятся, если вы
+            выберете статус
+            «Прочитано».
+          </span>
+        </Hint>
+      )}
+
+      <Button type="submit">
+        Добавить книгу
+      </Button>
     </Form>
   );
 }

@@ -1,67 +1,294 @@
-.book-card {
-  display: flex;
-  gap: 20px;
-  padding: 20px;
-  border: 1px solid #f3d6df;
-  border-radius: 18px;
-  background-color: #fff9fb;
-  box-shadow: 0 6px 18px rgba(210, 140, 165, 0.12);
+import {
+  type Book,
+  type BookStatus,
+} from "../../types/book";
+
+import styled from "@emotion/styled";
+
+import { TrashIcon } from "../../icons/icons";
+
+interface BookCardProps {
+  book: Book;
+
+  deleteBook: (
+    id: number,
+  ) => void;
+
+  rateBook: (
+    id: number,
+    rating: number,
+  ) => void;
 }
 
-.book-card__cover {
-  width: 90px;
-  min-width: 90px;
-  height: 120px;
+interface StatusStyleProps {
+  status: BookStatus;
+}
+
+interface CoverTitleStyleProps {
+  length: number;
+}
+
+const Card = styled.article`
   display: flex;
+  align-items: flex-start;
+  gap: 22px;
+
+  padding: 16px;
+
+  background: rgba(
+    255,
+    250,
+    252,
+    0.92
+  );
+
+  border: 1px solid #ead4dd;
+  border-radius: 16px;
+
+  box-shadow: 0 8px 20px
+    rgba(138, 64, 93, 0.1);
+`;
+
+const Cover = styled.div<StatusStyleProps>`
+  display: flex;
+  flex-shrink: 0;
+
   align-items: center;
   justify-content: center;
+
+  width: 86px;
+  height: 122px;
+
   padding: 10px;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #f8dce6, #f2c7d6);
-  text-align: center;
-}
 
-.book-card__cover-title {
-  font-size: 13px;
-  color: #7e5262;
-  font-weight: 600;
-}
+  color: #ffffff;
 
-.book-card__content {
+  border-radius: 8px;
+
+  background: ${({ status }) => {
+    if (status === "done") {
+      return "linear-gradient(135deg, #e29ab5, #a9496c)";
+    }
+
+    if (status === "reading") {
+      return "linear-gradient(135deg, #efb9ca, #c96f91)";
+    }
+
+    return "linear-gradient(135deg, #f2c9d7, #d693aa)";
+  }};
+`;
+
+const CoverTitle =
+  styled.span<CoverTitleStyleProps>`
+    font-weight: 600;
+    line-height: 1.15;
+
+    text-align: center;
+
+    word-break: break-word;
+
+    font-size: ${({ length }) => {
+      if (length > 40) {
+        return "8px";
+      }
+
+      if (length > 28) {
+        return "10px";
+      }
+
+      if (length > 16) {
+        return "12px";
+      }
+
+      return "16px";
+    }};
+  `;
+
+const Content = styled.div`
   display: flex;
+  flex: 1;
+
   flex-direction: column;
   align-items: flex-start;
-}
+`;
 
-.book-card__title {
-  margin: 0 0 8px;
-  font-size: 22px;
-  color: #6f4b59;
+const Title = styled.h3`
+  margin: 8px 0;
+
+  font-size: 24px;
   font-weight: 600;
-}
 
-.book-card__author {
-  margin: 0 0 10px;
-  font-size: 16px;
-  color: #9a7180;
-}
+  color: #7d3b55;
+`;
 
-.book-card__badge {
-  display: inline-block;
-  margin-bottom: 10px;
+const Author = styled.p`
+  margin: 0 0 12px;
+
+  font-size: 18px;
+
+  color: #a06179;
+`;
+
+const Badge = styled.span`
+  display: inline-flex;
+
   padding: 5px 12px;
-  border-radius: 20px;
-  background-color: #f6dbe4;
-  color: #8a5d6d;
-  font-size: 14px;
-}
 
-.book-card__info {
-  margin: 5px 0 0;
-  color: #956f7d;
-  font-size: 15px;
-}
+  color: #87435e;
 
-.book-card__info span {
-  color: #d48ca5;
+  background: #f6dfe8;
+
+  border-radius: 999px;
+`;
+
+const Info = styled.p`
+  margin: 12px 0 0;
+
+  font-size: 17px;
+
+  color: #745b65;
+`;
+
+const Rating = styled.div`
+  display: flex;
+  gap: 4px;
+
+  margin-top: 14px;
+`;
+
+const StarButton = styled.button<{
+  active: boolean;
+}>`
+  padding: 0;
+
+  font-size: 25px;
+
+  color: ${({ active }) =>
+    active
+      ? "#cf6f91"
+      : "#ddcbd2"};
+
+  background: transparent;
+
+  border: none;
+
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.12);
+  }
+`;
+
+const DeleteButton = styled.button`
+  display: flex;
+  flex-shrink: 0;
+
+  align-items: center;
+  justify-content: center;
+
+  width: 42px;
+  height: 42px;
+
+  margin-left: auto;
+
+  padding: 0;
+
+  background: #fff4f8;
+
+  border: 1px solid #ead4dd;
+  border-radius: 10px;
+
+  cursor: pointer;
+
+  &:hover {
+    background: #f7e5ec;
+  }
+`;
+
+const statusText = {
+  want: "Хочу прочитать",
+  reading: "Читаю",
+  done: "Прочитано",
+};
+
+export default function BookCard({
+  book,
+  deleteBook,
+  rateBook,
+}: BookCardProps) {
+  const rating =
+    book.rating ?? 0;
+
+  return (
+    <Card>
+      <Cover status={book.status}>
+        <CoverTitle
+          length={book.title.length}
+        >
+          {book.title}
+        </CoverTitle>
+      </Cover>
+
+      <Content>
+        <Title>
+          {book.title}
+        </Title>
+
+        <Author>
+          {book.author}
+        </Author>
+
+        <Badge>
+          {statusText[book.status]}
+        </Badge>
+
+        <Info>
+          Оценка:{" "}
+          {rating > 0
+            ? `${rating}/5`
+            : "не поставлена"}
+        </Info>
+
+        <Rating>
+          {[1, 2, 3, 4, 5].map(
+            (value) => (
+              <StarButton
+                key={value}
+                type="button"
+                active={
+                  value <= rating
+                }
+                onClick={() =>
+                  rateBook(
+                    book.id,
+                    value,
+                  )
+                }
+              >
+                ★
+              </StarButton>
+            ),
+          )}
+        </Rating>
+
+        {book.note && (
+          <Info>
+            Заметка: {book.note}
+          </Info>
+        )}
+      </Content>
+
+      <DeleteButton
+        type="button"
+        onClick={() =>
+          deleteBook(book.id)
+        }
+        aria-label="Удалить книгу"
+      >
+        <TrashIcon
+          color="#8a405d"
+        />
+      </DeleteButton>
+    </Card>
+  );
 }
